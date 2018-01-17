@@ -1,5 +1,5 @@
 <p id="notice"><%= notice %></p>
-
+<div class="column col-6">
 <p>
   <strong>Title:</strong>
   <%= @post.title %>
@@ -15,5 +15,8 @@
   <%= @post.published %>
 </p>
 
-<%= link_to 'Edit', edit_post_path(@post) %> |
-<%= link_to 'Back', posts_path %>
+<div class="btn-group btn-group-block">
+<%= button_to "Edit", edit_post_path(@post), method: :get, class: "btn" %>
+<%= button_to "Back", posts_path, method: :get, class: "btn" %>
+</div>
+</div>
