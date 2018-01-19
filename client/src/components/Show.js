@@ -4,16 +4,24 @@ class Show extends React.Component {
   render() {
     let array = this.props.posts;
     let currentPost;
+    let number;
     for (var i = 0; i < array.length; i++) {
-      if (array[i].id == this.props.postId) {
+      if (array[i].id === this.props.postId) {
         currentPost = array[i];
       }
+    }
+    if (currentPost.number == 0) {
+      number = "";
+    } else {
+      number = currentPost.number;
     }
 
     return (
       <div>
         <center>
-          <h1>{currentPost.title}</h1>
+          <h1>
+            {currentPost.title} {number}
+          </h1>
         </center>
         <h3>{currentPost.body}</h3>
         <br />
