@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require("react");
 
 class New extends React.Component {
   render() {
@@ -8,20 +8,24 @@ class New extends React.Component {
           <h1>New Post</h1>
         </center>
         Title: <br />
-        <input onChange={this.props.createTitle} />
+        <input value={this.props.postTitle} onChange={this.props.createTitle} />
         <br />
         Body: <br />
-        <input onChange={this.props.createBody} />
+        <input calue={this.props.postBody} onChange={this.props.createBody} />
         <br />
-        <input type="checkbox" onClick={this.props.togglePublish} />
-        Published:
+        <input
+          type="checkbox"
+          checked={this.props.publish}
+          onClick={this.props.togglePublish}
+        />
+        Published
         <br />
         <br />
         <button onClick={this.props.submitPost}>Create Post</button>
+        <button onClick={this.props.goBack}>Back</button>
       </div>
     );
   }
 }
-
 
 module.exports = New;
