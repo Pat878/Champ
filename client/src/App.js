@@ -9,6 +9,7 @@ var New = require("./components/New");
 var Show = require("./components/Show");
 var Index = require("./components/Index");
 var Edit = require("./components/Edit");
+var Loading = require("./components/Loading");
 var factorial = require("./utils/factorial");
 
 class App extends Component {
@@ -20,7 +21,8 @@ class App extends Component {
       postTitle: "",
       postBody: "",
       publish: false,
-      number: 0
+      number: 0,
+      loading: true
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.showPost = this.showPost.bind(this);
@@ -206,15 +208,20 @@ class App extends Component {
     const IndexRoute = props => {
       return (
         <div>
-          <Index
-            handleDelete={this.handleDelete.bind(this)}
-            removePost={this.removePost}
-            posts={this.state.posts}
-            showPost={this.showPost.bind(this)}
-            loading={this.state.loading}
-            editPost={this.editPost.bind(this)}
-            writeNewPost={this.writeNewPost}
-          />
+          {this.state.loading ? (
+            <Loading />
+          ) : (
+            <Index
+              handleDelete={this.handleDelete.bind(this)}
+              removePost={this.removePost}
+              posts={this.state.posts}
+              showPost={this.showPost.bind(this)}
+              loading={this.state.loading}
+              editPost={this.editPost.bind(this)}
+              writeNewPost={this.writeNewPost}
+              loading={this.state.loading}
+            />
+          )}
         </div>
       );
     };

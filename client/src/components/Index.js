@@ -9,13 +9,26 @@ class Index extends React.Component {
           <td> {post.body}</td>
           <td> {post.published.toString()}</td>
           <td>
-            <button onClick={this.props.showPost.bind(this, i)}>Show</button>
+            <button
+              className="btn btn-primary"
+              onClick={this.props.showPost.bind(this, i)}
+            >
+              Show
+            </button>
           </td>
           <td>
-            <button onClick={this.props.editPost.bind(this, i)}>Edit</button>
+            <button
+              className="btn btn-default"
+              onClick={this.props.editPost.bind(this, i)}
+            >
+              Edit
+            </button>
           </td>
           <td>
-            <button onClick={this.props.handleDelete.bind(this, i)}>
+            <button
+              className="btn btn-danger"
+              onClick={this.props.handleDelete.bind(this, i)}
+            >
               Destroy
             </button>
           </td>
@@ -27,6 +40,7 @@ class Index extends React.Component {
       <div>
         <center>
           <h1>Posts</h1>
+          <hr />
         </center>
 
         <table className="table table-striped table-hover">
@@ -42,7 +56,11 @@ class Index extends React.Component {
           <tbody>{posts}</tbody>
         </table>
         <br />
-        <button onClick={this.props.writeNewPost}>New Post</button>
+        <center>
+          <button className="btn btn-success" onClick={this.props.writeNewPost}>
+            New Post
+          </button>
+        </center>
       </div>
     );
   }
