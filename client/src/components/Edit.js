@@ -2,14 +2,6 @@ var React = require("react");
 
 class Edit extends React.Component {
   render() {
-    let array = this.props.posts;
-    let currentPost;
-    for (var i = 0; i < array.length; i++) {
-      if (array[i].id == this.props.postId) {
-        currentPost = array[i];
-      }
-    }
-
     return (
       <div>
         <center>
@@ -29,7 +21,8 @@ class Edit extends React.Component {
         Publish
         <br />
         <br />
-        <button>Edit Post</button>
+        <button onClick={this.props.submitUpdatedPost}>Edit Post</button>
+        <button onClick={this.props.goBack}>Back</button>
       </div>
     );
   }
