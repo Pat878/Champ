@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { Router, Route, Link, Switch } from "react-router-dom";
+import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 var history = createBrowserHistory();
@@ -9,6 +9,7 @@ var New = require("./components/New");
 var Show = require("./components/Show");
 var Index = require("./components/Index");
 var Edit = require("./components/Edit");
+var factorial = require("./utils/factorial");
 
 class App extends Component {
   constructor() {
@@ -18,7 +19,8 @@ class App extends Component {
       postId: "",
       postTitle: "",
       postBody: "",
-      publish: false
+      publish: false,
+      number: 0
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.showPost = this.showPost.bind(this);
@@ -75,9 +77,9 @@ class App extends Component {
     }
 
     let currentPost;
-    for (var i = 0; i < array.length; i++) {
-      if (array[i].id == postId) {
-        currentPost = array[i];
+    for (var j = 0; j < array.length; j++) {
+      if (array[j].id == postId) {
+        currentPost = array[j];
       }
     }
 
@@ -120,7 +122,8 @@ class App extends Component {
         post: {
           title: this.state.postTitle,
           body: this.state.postBody,
-          published: this.state.publish
+          published: this.state.publish,
+          number: factorial
         }
       })
     })
@@ -156,7 +159,8 @@ class App extends Component {
         post: {
           title: this.state.postTitle,
           body: this.state.postBody,
-          published: this.state.publish
+          published: this.state.publish,
+          number: factorial
         }
       })
     })
@@ -226,6 +230,7 @@ class App extends Component {
             postId={this.state.postId}
             goBack={this.goBack}
             editPost={this.editPost.bind(this)}
+            number={this.state.number}
           />
         </div>
       );
