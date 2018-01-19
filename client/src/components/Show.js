@@ -20,7 +20,7 @@ class Show extends React.Component {
         <h4>Published: {currentPost.published.toString()}</h4>
         <button onClick={this.props.goBack}>Back</button>
         <td>
-          <button onClick={this.props.editPostFromShow}>Edit</button>
+          <button onClick={this.props.editPost}>Edit</button>
         </td>
         <br />
       </div>
