@@ -41,7 +41,6 @@ class PostsController < ApplicationController
   # DELETE /posts/1.json
   def destroy
     Post.destroy(params[:id])
-
   end
 
   private
