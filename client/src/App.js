@@ -26,7 +26,9 @@ class App extends Component {
     this.createTitle = this.createTitle.bind(this);
     this.createBody = this.createBody.bind(this);
     this.togglePublish = this.togglePublish.bind(this);
-    this.editPostFromShow = this.editPostFromShow.bind(this);
+    this.submitPost = this.submitPost.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.submitUpdatedPost = this.submitUpdatedPost.bind(this);
   }
 
   componentDidMount() {
@@ -36,8 +38,8 @@ class App extends Component {
   }
 
   handleDelete(i, e) {
-    var array = this.state.posts;
-    var index = array[i].id;
+    let array = this.state.posts;
+    let index = array[i].id;
     console.log(index);
     if (window.confirm("Are you sure?")) {
       return fetch("posts/" + index, {
@@ -47,12 +49,10 @@ class App extends Component {
   }
 
   removePost(i, e) {
-    var array = this.state.posts;
-
+    let array = this.state.posts;
+    //made changes below - test delete
     this.setState({
-      posts: this.state.posts.filter(function(post) {
-        return post !== array[i];
-      })
+      posts: this.state.posts.filter(post => post !== array[i])
     });
   }
 
@@ -65,14 +65,15 @@ class App extends Component {
     history.push(submissionPath);
   }
 
-  editPostFromShow() {
-    let submissionPath = "/edit/" + this.state.postId;
-    history.push(submissionPath);
-  }
-
   editPost(i) {
+    let postId;
     let array = this.state.posts;
-    let postId = array[i].id;
+    if (Number.isInteger(i) === false) {
+      postId = this.state.postId;
+    } else {
+      postId = array[i].id;
+    }
+
     let currentPost;
     for (var i = 0; i < array.length; i++) {
       if (array[i].id == postId) {
@@ -80,7 +81,6 @@ class App extends Component {
       }
     }
 
-    console.log(currentPost);
     this.setState({
       postId: postId,
       postTitle: currentPost.title,
@@ -110,10 +110,90 @@ class App extends Component {
   }
 
   submitPost() {
-    console.log(true);
+    fetch("posts", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        post: {
+          title: this.state.postTitle,
+          body: this.state.postBody,
+          published: this.state.publish
+        }
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.handleSubmit(responseJson);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    let submissionPath = "/";
+    history.push(submissionPath);
+  }
+
+  handleSubmit(post) {
+    var newState = this.state.posts.concat(post);
+    this.setState({
+      posts: newState,
+      postTitle: "",
+      postBody: "",
+      publish: false
+    });
+  }
+
+  submitUpdatedPost() {
+    fetch("/posts/" + this.state.postId, {
+      method: "put",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        post: {
+          title: this.state.postTitle,
+          body: this.state.postBody,
+          published: this.state.publish
+        }
+      })
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.handleUpdate(responseJson);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    let submissionPath = "/";
+    history.push(submissionPath);
+  }
+
+  handleUpdate(post) {
+    var newState = this.state.posts;
+
+    for (var i = 0; i < newState.length; i++) {
+      if (newState[i].id == post.id) {
+        newState[i] = post;
+      }
+    }
+
+    this.setState({
+      posts: newState,
+      postTitle: "",
+      postBody: "",
+      publish: false
+    });
   }
 
   goBack() {
+    this.setState({
+      postTitle: "",
+      postBody: "",
+      publish: false
+    });
     let submissionPath = "/";
     history.push(submissionPath);
   }
@@ -146,7 +226,6 @@ class App extends Component {
             postId={this.state.postId}
             goBack={this.goBack}
             editPost={this.editPost.bind(this)}
-            editPostFromShow={this.editPostFromShow}
           />
         </div>
       );
@@ -166,6 +245,7 @@ class App extends Component {
             postTitle={this.state.postTitle}
             postBody={this.state.postBody}
             publish={this.state.publish}
+            submitUpdatedPost={this.submitUpdatedPost}
           />
         </div>
       );
@@ -181,6 +261,8 @@ class App extends Component {
             postTitle={this.state.postTitle}
             postBody={this.state.postBody}
             togglePublish={this.togglePublish}
+            goBack={this.goBack}
+            publish={this.state.publish}
           />
         </div>
       );
