@@ -4,13 +4,9 @@ import "./App.css";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
-var history = createBrowserHistory();
-var New = require("./components/New");
-var Show = require("./components/Show");
-var Index = require("./components/Index");
-var Edit = require("./components/Edit");
-var Loading = require("./components/Loading");
+var Routes = require("./components/Routes");
 var factorial = require("./utils/factorial");
+var history = createBrowserHistory();
 
 class App extends Component {
   constructor() {
@@ -22,7 +18,8 @@ class App extends Component {
       postBody: "",
       publish: false,
       number: 0,
-      loading: true
+      loading: true,
+      history: createBrowserHistory()
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.showPost = this.showPost.bind(this);
@@ -33,6 +30,7 @@ class App extends Component {
     this.submitPost = this.submitPost.bind(this);
     this.goBack = this.goBack.bind(this);
     this.submitUpdatedPost = this.submitUpdatedPost.bind(this);
+    this.writeNewPost = this.writeNewPost.bind(this);
   }
 
   componentDidMount() {
@@ -44,7 +42,7 @@ class App extends Component {
   handleDelete(i, e) {
     let array = this.state.posts;
     let index = array[i].id;
-    console.log(index);
+
     if (window.confirm("Are you sure?")) {
       return fetch("posts/" + index, {
         method: "delete"
@@ -54,7 +52,6 @@ class App extends Component {
 
   removePost(i, e) {
     let array = this.state.posts;
-    //made changes below - test delete
     this.setState({
       posts: this.state.posts.filter(post => post !== array[i])
     });
@@ -63,8 +60,7 @@ class App extends Component {
   showPost(i) {
     var array = this.state.posts;
     var postId = array[i].id;
-    console.log(postId);
-    this.setState({ postId: postId });
+    this.setState({ postId: postId, history: history });
     let submissionPath = "/posts/" + postId;
     history.push(submissionPath);
   }
@@ -89,7 +85,8 @@ class App extends Component {
       postId: postId,
       postTitle: currentPost.title,
       postBody: currentPost.body,
-      publish: currentPost.published
+      publish: currentPost.published,
+      history: history
     });
     let submissionPath = "/edit/" + postId;
     history.push(submissionPath);
@@ -98,6 +95,7 @@ class App extends Component {
   writeNewPost() {
     let submissionPath = "/create";
     history.push(submissionPath);
+    this.setState({ history: history });
   }
 
   createTitle(e) {
@@ -146,7 +144,8 @@ class App extends Component {
       posts: newState,
       postTitle: "",
       postBody: "",
-      publish: false
+      publish: false,
+      history: history
     });
   }
 
@@ -190,114 +189,46 @@ class App extends Component {
       posts: newState,
       postTitle: "",
       postBody: "",
-      publish: false
+      publish: false,
+      history: history
     });
   }
 
   goBack() {
+    let submissionPath = "/";
+    history.push(submissionPath);
     this.setState({
       postTitle: "",
       postBody: "",
-      publish: false
+      publish: false,
+      history: history
     });
-    let submissionPath = "/";
-    history.push(submissionPath);
   }
 
   render() {
-    const IndexRoute = props => {
-      return (
-        <div>
-          {this.state.loading ? (
-            <Loading />
-          ) : (
-            <Index
-              handleDelete={this.handleDelete.bind(this)}
-              removePost={this.removePost}
-              posts={this.state.posts}
-              showPost={this.showPost.bind(this)}
-              loading={this.state.loading}
-              editPost={this.editPost.bind(this)}
-              writeNewPost={this.writeNewPost}
-              loading={this.state.loading}
-            />
-          )}
-        </div>
-      );
-    };
-
-    const ShowRoute = props => {
-      return (
-        <div>
-          <Show
-            handleDelete={this.handleDelete.bind(this)}
-            removePost={this.removePost}
-            posts={this.state.posts}
-            showPost={this.showPost}
-            postId={this.state.postId}
-            goBack={this.goBack}
-            editPost={this.editPost.bind(this)}
-            number={this.state.number}
-          />
-        </div>
-      );
-    };
-
-    const EditRoute = props => {
-      return (
-        <div>
-          <Edit
-            posts={this.state.posts}
-            postId={this.state.postId}
-            goBack={this.goBack}
-            submitPost={this.submitPost}
-            createTitle={this.createTitle}
-            createBody={this.createBody}
-            togglePublish={this.togglePublish}
-            postTitle={this.state.postTitle}
-            postBody={this.state.postBody}
-            publish={this.state.publish}
-            submitUpdatedPost={this.submitUpdatedPost}
-          />
-        </div>
-      );
-    };
-
-    const NewRoute = props => {
-      return (
-        <div>
-          <New
-            submitPost={this.submitPost}
-            createTitle={this.createTitle}
-            createBody={this.createBody}
-            postTitle={this.state.postTitle}
-            postBody={this.state.postBody}
-            togglePublish={this.togglePublish}
-            goBack={this.goBack}
-            publish={this.state.publish}
-          />
-        </div>
-      );
-    };
-
     return (
-      <div>
-        <Router history={history}>
-          <div>
-            <Switch>
-              <Route exact path={"/"} render={IndexRoute} />
-              <Route path="/posts/:id" render={ShowRoute} />
-              <Route path="/edit/:id" render={EditRoute} />
-              <Route path="/create" render={NewRoute} />
-              <Route
-                render={function() {
-                  return <p>Not Found</p>;
-                }}
-              />
-            </Switch>
-          </div>
-        </Router>
-      </div>
+      <Routes
+        handleDelete={this.handleDelete.bind(this)}
+        removePost={this.removePost}
+        posts={this.state.posts}
+        showPost={this.showPost.bind(this)}
+        postId={this.state.postId}
+        loading={this.state.loading}
+        goBack={this.goBack}
+        editPost={this.editPost.bind(this)}
+        writeNewPost={this.writeNewPost}
+        number={this.state.number}
+        submitPost={this.submitPost}
+        createTitle={this.createTitle}
+        createBody={this.createBody}
+        togglePublish={this.togglePublish}
+        postTitle={this.state.postTitle}
+        postBody={this.state.postBody}
+        publish={this.state.publish}
+        submitUpdatedPost={this.submitUpdatedPost}
+        submitPost={this.submitPost}
+        history={this.state.history}
+      />
     );
   }
 }
